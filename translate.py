@@ -1,7 +1,6 @@
 from collections import defaultdict
 from pathlib import Path
 import re
-from googletrans import Translator
 from google_trans_new import google_translator
 import string
 import importlib
@@ -73,7 +72,7 @@ def build_maps_from_files(files, words_cnt, existing_mapping=None):
 
     common_words = filter(lambda p: p[1] > 1, words_cnt.items())
     common_words = sorted(common_words, key=lambda p:p[1], reverse=True)[:5000]
-    
+
     for word, cnt in common_words:
         if existing_mapping is not None and word in existing_mapping:
             continue
@@ -83,7 +82,7 @@ def build_maps_from_files(files, words_cnt, existing_mapping=None):
             res[word] = to
         else:
             skipped[word] = to
-        
+
     save_map_to_file(res, "map_ru_ua_gen.py", words_cnt)
     save_map_to_file(skipped, "map_ru_ua_skipped.py", words_cnt)
 
@@ -95,4 +94,4 @@ def build_maps_from_files(files, words_cnt, existing_mapping=None):
 # build_maps_from_files(files, words_cnt, load_maps(['map_ru_ua_custom', 'map_ru_ua_top']))
 
 # translate_files(files, load_maps(['map_ru_ua_custom', 'map_ru_ua_top', 'map_ru_ua_rest']))
-translate_files([Path('../algorithms/templates/pages/eratosthenes_sieve.html')], load_maps(['map_ru_ua_custom', 'map_ru_ua_top', 'map_ru_ua_rest']))
+translate_files([Path('../algorithms/templates/pages/XXX.html')], load_maps(['map_ru_ua_custom', 'map_ru_ua_top', 'map_ru_ua_rest']))
