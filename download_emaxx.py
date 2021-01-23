@@ -31,4 +31,4 @@ for id in get_ids('http://e-maxx.ru/algo/'):
     print(f'URL: {alg_url}')
     txt = download_alg(alg_url)
     Path("raw").mkdir(exist_ok=True)
-    save(txt, f'raw/{id}.html')
+    save(txt, f'raw/{id}.tex')

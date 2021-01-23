@@ -4,6 +4,7 @@ import re
 from google_trans_new import google_translator
 import string
 import importlib
+from tqdm import tqdm
 
 def load_maps(module_names):
     res = {}
@@ -14,14 +15,19 @@ def load_maps(module_names):
                 res[k] = v
     return res
 
+def translate_file(file: Path, m):
+    print("\nTRANSLATING: ", file)
+    txt = file.read_text(encoding='utf-8')
+    for f, t in m.items():
+        f = re.escape(f)
+        txt = re.sub(f'([^а-яїіщёА-ЯЇІЩЁ]){f}([^а-яїіщёА-ЯЇІЩЁ])', f'\\1{t}\\2', txt)
+    out_dir = file.parent / 'translated'
+    out_dir.mkdir(exist_ok=True)
+    (out_dir / file.name).write_text(txt, encoding="utf-8")
+
 def translate_files(files, m):
-    for file in files:
-        print("TRANSLATING: ", file)
-        txt = file.read_text(encoding='utf-8')
-        for f, t in m.items():
-            f = re.escape(f)
-            txt = re.sub(f'([^а-яїіщёА-ЯЇІЩЁ]){f}([^а-яїіщёА-ЯЇІЩЁ])', f'\\1{t}\\2', txt)
-        file.write_text(txt, encoding="utf-8")
+    for file in tqdm(files):
+        translate_file(file, m)
 
 def translate_word(word):
     translator = google_translator()
@@ -91,7 +97,19 @@ def build_maps_from_files(files, words_cnt, existing_mapping=None):
 # files = [file for file in Path('').glob('templates/pages/*.html')]
 # files.append(Path('templates/index.html'))
 # words_cnt = count_words(files)
-# build_maps_from_files(files, words_cnt, load_maps(['map_ru_ua_custom', 'map_ru_ua_top']))
+# build_maps_from_files(files, words_cnt, load_maps([
+#     'translate_maps/map_ru_ua_custom',
+#     'translate_maps/map_ru_ua_top'
+# ]))
 
-# translate_files(files, load_maps(['map_ru_ua_custom', 'map_ru_ua_top', 'map_ru_ua_rest']))
-translate_files([Path('../algorithms/templates/pages/XXX.html')], load_maps(['map_ru_ua_custom', 'map_ru_ua_top', 'map_ru_ua_rest']))
+all_maps = load_maps([
+    'translate_maps.map_ru_ua_custom',
+    'translate_maps.map_ru_ua_top',
+    'translate_maps.map_ru_ua_rest'
+])
+
+translate_files(list(Path('raw/formatted_md').glob('*.md')), all_maps)
+# translate_files(list(Path('../algorithm/templates/pages').glob('*.md')), all_maps)
+# translate_file(Path('../algorithms/templates/index.md'), all_maps)
+# translate_file(Path('../algorithms/templates/pages/bfs.md'), all_maps)
+# translate_file(Path('../algorithms/templates/pages/eratosthenes_sieve.html'), all_maps)

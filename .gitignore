@@ -1,4 +1,5 @@
-build/
 .vscode/
+.history/
 __pycache__/
 raw/
+build/
