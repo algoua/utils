@@ -60,14 +60,16 @@ def format_file(file:Path):
     txt = re.sub(r'[\s\n]*</code>', '\n```', txt)
  
     txt = re.sub(r'\\href=([^{]+){([^}]+)}', '[\\2](\\1)', txt)
-    txt = re.sub(r'\\algohref=([a-z_0-9]+)\{(.+?)\}', '[\\2](\\1)', txt)
-    txt = re.sub(r'<algohref=([a-z_0-9]+)>(.+?)</algohref>', '[\\2](\\1)', txt)
+    txt = re.sub(r'\\algohref=(.+?)\{(.+?)\}', '[\\2](\\1)', txt)
+    txt = re.sub(r'<a href="(.+?)">(.+?)</a>', '[\\2](\\1)', txt)
+    txt = re.sub(r'<algohref=(.+?)>(.+?)</algohref>', '[\\2](\\1)', txt)
 
     txt = re.sub(r'^<h1>\s*', '# ', txt)
     txt = re.sub(r'\n+<h1>\s*', '\n\n# ', txt)
     txt = re.sub(r'\n+<h2>\s*', '\n\n## ', txt)
     txt = re.sub(r'\n+<h3>\s*', '\n\n### ', txt)
     txt = re.sub(r'\n+<h4>\s*', '\n\n#### ', txt)
+    txt = re.sub(r'(#{1,4}.*?)\n([^\n]+)', '\\1\n\n\\2', txt)
     txt = re.sub(r'<li>\s*', '* ', txt)
     txt = '\n'.join([re.sub(r'^(\s*)\\li\s*([^\{].+)$', '* \\2', line)  for line in txt.split('\n')])
     txt = re.sub(r'<\/p>\n*([^\n])', '\n\n\\1', txt)
@@ -76,14 +78,17 @@ def format_file(file:Path):
     txt = re.sub(r'<formula>\s*', '$$ ', txt)
     txt = re.sub(r'\s*</formula>', ' $$', txt)
 
+    txt = txt.replace('<hr>', '')
     txt = txt.replace('<ul>', '')
     txt = txt.replace('<p>', '')
+    txt = txt.replace('</p>', '')
     txt = txt.replace('</h1>', '')
     txt = txt.replace('</h2>', '')
     txt = txt.replace('</h3>', '')
     txt = txt.replace('</h4>', '')
     txt = txt.replace('</ul>', '')
     txt = txt.replace('</li>', '')
+
     txt = re.sub(r'\n\n+', '\n\n', txt)
 
     txt = txt.strip()
