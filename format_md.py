@@ -21,6 +21,7 @@ def format_file(file:Path):
         'h3': ('<h3>', '</h3>'),
         'h4': ('<h4>', '</h4>'),
         'bf': ('**', '**'),
+        'pmatrix': ('\\begin{pmatrix}', '\\end{pmatrix}'),
     }
     for tex_tag, md_tag in tags.items():
         open_tex_tag = f'\\{tex_tag}{{'
@@ -75,8 +76,9 @@ def format_file(file:Path):
     txt = re.sub(r'<\/p>\n*([^\n])', '\n\n\\1', txt)
     txt = re.sub(r'<br>', '\n', txt)
     txt = re.sub(r'<b>|</b>', '**', txt)
-    txt = re.sub(r'<formula>\s*', '$$ ', txt)
-    txt = re.sub(r'\s*</formula>', ' $$', txt)
+    txt = re.sub(r'<formula>\s*', '$$\n', txt)
+    txt = re.sub(r'\s*</formula>', '\n$$', txt)
+    txt = re.sub(r'\n*\$\$\s*([^$]+?)\s*\$\$\n*', '\n\n$$\n\\1\n$$\n\n', txt)
 
     txt = txt.replace('<hr>', '')
     txt = txt.replace('<ul>', '')
